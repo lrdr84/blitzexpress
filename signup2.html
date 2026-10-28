@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dispatch Portal & Admin Dashboard</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --border: #e2e8f0;
+      --error: #ef4444;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Top Navigation Tabs */
+    .view-nav {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    .nav-btn {
+      padding: 8px 16px;
+      border: none;
+      background: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #64748b;
+      transition: all 0.2s;
+    }
+
+    .nav-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 580px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-bottom: 6px;
+      font-size: 1.4rem;
+    }
+
+    p.subtitle {
+      color: #64748b;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      background-color: #fff;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn:hover { background-color: var(--primary-hover); }
+    .btn:disabled { background-color: #94a3b8; cursor: not-allowed; }
+
+    .location-box {
+      margin-bottom: 18px;
+      padding: 12px;
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      background-color: #f1f5f9;
+      text-align: center;
+    }
+
+    .location-btn {
+      background: white;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .status-msg {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .status-msg.error { color: var(--error); }
+    .status-msg.success { color: var(--success); }
+
+    .hidden { display: none !important; }
+
+    .rider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .task-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 14px;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+    }
+
+    .task-pay {
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    .task-detail {
+      font-size: 0.88rem;
+      color: #475569;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge.near { background-color: #d1fae5; color: #065f46; }
+    .badge.far { background-color: #fee2e2; color: #991b1b; }
+
+    .admin-task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .delete-btn {
+      background-color: var(--error);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .logout-btn {
+      background: none;
+      border: 1px solid var(--error);
+      color: var(--error);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Switcher -->
+  <div class="view-nav">
+    <button class="nav-btn active" id="showAdminBtn">Admin Panel</button>
+    <button class="nav-btn" id="showRiderBtn">Rider Portal</button>
+  </div>
+
+  <div class="container">
+
+    <!-- ================= ADMIN LOGIN CARD ================= -->
+    <div id="adminAuthCard" class="card">
+      <h2>Admin Login</h2>
+      <p class="subtitle">Enter the password to access task management controls.</p>
+
+      <form id="adminLoginForm">
+        <div class="form-group">
+          <label for="adminPassword">Password</label>
+          <input type="password" id="adminPassword" placeholder="Enter admin password" required>
+        </div>
+        <div id="authError" class="status-msg error hidden">Incorrect password. Please try again.</div>
+        <button type="submit" class="btn" style="margin-top: 10px;">Login to Admin Panel</button>
+      </form>
+    </div>
+
+    <!-- ================= ADMIN DASHBOARD ================= -->
+    <div id="adminView" class="card hidden">
+      <div class="admin-header">
+        <h2>Dispatch Admin Dashboard</h2>
+        <button class="logout-btn" id="adminLogoutBtn">Logout</button>
+      </div>
+      <p class="subtitle">Post new delivery tasks and specify pickup locations/coordinates.</p>
+
+      <form id="createTaskForm">
+        <div class="form-group">
+          <label for="taskTitle">Task / Pickup Title</label>
+          <input type="text" id="taskTitle" placeholder="e.g. Computer Village Pickup" required>
+        </div>
+
+        <div class="form-group">
+          <label for="hubPreset">Select Pre-set Hub or Enter Coordinates</label>
+          <select id="hubPreset">
+            <option value="custom">-- Custom Coordinates --</option>
+            <option value="6.5922,3.3581">Ikeja / Allen Avenue (6.5922, 3.3581)</option>
+            <option value="6.4281,3.4219">Victoria Island / Lekki (6.4281, 3.4219)</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pickupLat">Pickup Latitude</label>
+            <input type="number" step="any" id="pickupLat" placeholder="e.g. 6.5922" required>
+          </div>
+          <div class="form-group">
+            <label for="pickupLng">Pickup Longitude</label>
+            <input type="number" step="any" id="pickupLng" placeholder="e.g. 3.3581" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="dropoffLocation">Dropoff Address</label>
+          <input type="text" id="dropoffLocation" placeholder="e.g. 12 Toyin Street, Ikeja" required>
+        </div>
+
+        <div class="form-group">
+          <label for="deliveryPay">Payment (₦)</label>
+          <input type="text" id="deliveryPay" placeholder="e.g. ₦3,500" required>
+        </div>
+
+        <button type="submit" class="btn">Post Delivery Task</button>
+      </form>
+
+      <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--border);">
+
+      <h3 style="font-size: 1.1rem; margin-bottom: 12px;">Active Posted Tasks</h3>
+      <div id="adminTaskList">
+        <!-- Admin tasks list here -->
+      </div>
+    </div>
+
+    <!-- ================= RIDER PORTAL ================= -->
+    <div id="riderView" class="hidden">
+      
+      <!-- Registration Step -->
+      <div id="registrationCard" class="card">
+        <h2>Rider Registration</h2>
+        <p class="subtitle">Enter your details and verify location to see delivery tasks.</p>
+
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" placeholder="e.g. Nusaiba Andrew" required>
+          </div>
+
+          <div class="form-group">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="tel" id="phoneNumber" placeholder="e.g. 08123456789" required>
+          </div>
+         
+          <div class="matric-group">
+            <label for="matricNumber">Matric Number</label>
+            <input type="text" id="matricNumber" placeholder="e.g. 2021/67490" required>
+          </div>
+
+          <div class="location-box">
+            <p style="font-size: 0.85rem;">Check location to find tasks in your vicinity.</p>
+            <button type="button" class="location-btn" id="checkLocBtn">Verify My Location</button>
+            <div id="regLocStatus" class="status-msg"></div>
+          </div>
+
+          <button type="submit" class="btn" id="regSubmitBtn" disabled>View Available Tasks</button>
+        </form>
+      </div>
+
+      <!-- Task List Step -->
+      <div id="taskMenuCard" class="card hidden">
+        <div class="rider-header">
+          <div>
+            <h2 id="riderGreeting">Welcome, Rider</h2>
+            <span style="font-size: 0.8rem; color: #64748b;" id="riderPhone"></span>
+          </div>
+          <button id="refreshLocBtn" class="location-btn" style="font-size: 0.8rem; padding: 4px 10px;">Refresh GPS</button>
+        </div>
+
+        <p class="subtitle" style="margin-bottom: 12px;">Tasks in your vicinity (Within 9 km radius)</p>
+
+        <div id="riderTaskList">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const matricNumber = document.getElementById("matricNumber").value
+    // --- ADMIN CONFIGURATION ---
+    const ADMIN_PASSWORD = "DanceForMe222#"; // Change this to your desired password
+    let isAdminAuthenticated = false;
+
+    const MAX_TASK_RADIUS_KM = 800.0; // Radius limit for tasks
+
+    // Default Seed Tasks
+    const initialTasks = [
+      {
+        id: "TSK-101",
+        pickupName: "Mija's Pasta",
+        lat: 7.7642,
+        lng: 4.5996,
+        dropoff: "King Of Peace 2",
+        pay: "₦1,000"
+      },
+      {
+        id: "TSK-102",
+        pickupName: "Table Manner Lounge",
+        lat: 7.7551,
+        lng: 4.6062,
+        dropoff: "King Of Peace 2",
+        pay: "₦1,000"
+      }
+    ];
+
+    function getTasks() {
+      const stored = localStorage.getItem('dispatch_tasks');
+      if (!stored) {
+        localStorage.setItem('dispatch_tasks', JSON.stringify(initialTasks));
+        return initialTasks;
+      }
+      return JSON.parse(stored);
+    }
+
+    function saveTasks(tasks) {
+      localStorage.setItem('dispatch_tasks', JSON.stringify(tasks));
+    }
+
+    // --- Tab Navigation ---
+    const showAdminBtn = document.getElementById('showAdminBtn');
+    const showRiderBtn = document.getElementById('showRiderBtn');
+    const adminAuthCard = document.getElementById('adminAuthCard');
+    const adminView = document.getElementById('adminView');
+    const riderView = document.getElementById('riderView');
+
+    showAdminBtn.addEventListener('click', () => {
+      showAdminBtn.classList.add('active');
+      showRiderBtn.classList.remove('active');
+      riderView.classList.add('hidden');
+
+      if (isAdminAuthenticated) {
+        adminView.classList.remove('hidden');
+        adminAuthCard.classList.add('hidden');
+        renderAdminTasks();
+      } else {
+        adminAuthCard.classList.remove('hidden');
+        adminView.classList.add('hidden');
+      }
+    });
+
+    showRiderBtn.addEventListener('click', () => {
+      showRiderBtn.classList.add('active');
+      showAdminBtn.classList.remove('active');
+      adminAuthCard.classList.add('hidden');
+      adminView.classList.add('hidden');
+      riderView.classList.remove('hidden');
+    });
+
+    // --- Admin Authentication Logic ---
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    const adminPasswordInput = document.getElementById('adminPassword');
+    const authError = document.getElementById('authError');
+    const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+
+    adminLoginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (adminPasswordInput.value === ADMIN_PASSWORD) {
+        isAdminAuthenticated = true;
+        authError.classList.add('hidden');
+        adminPasswordInput.value = "";
+        adminAuthCard.classList.add('hidden');
+        adminView.classList.remove('hidden');
+        renderAdminTasks();
+      } else {
+        authError.classList.remove('hidden');
+      }
+    });
+
+    adminLogoutBtn.addEventListener('click', () => {
+      isAdminAuthenticated = false;
+      adminView.classList.add('hidden');
+      adminAuthCard.classList.remove('hidden');
+    });
+
+    // --- Admin Dashboard Logic ---
+    const hubPreset = document.getElementById('hubPreset');
+    const pickupLat = document.getElementById('pickupLat');
+    const pickupLng = document.getElementById('pickupLng');
+    const createTaskForm = document.getElementById('createTaskForm');
+    const adminTaskList = document.getElementById('adminTaskList');
+
+    hubPreset.addEventListener('change', () => {
+      if (hubPreset.value !== 'custom') {
+        const [lat, lng] = hubPreset.value.split(',');
+        pickupLat.value = lat;
+        pickupLng.value = lng;
+      }
+    });
+
+    createTaskForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const tasks = getTasks();
+
+      const newTask = {
+        id: "TSK-" + Math.floor(100 + Math.random() * 900),
+        pickupName: document.getElementById('taskTitle').value,
+        lat: parseFloat(pickupLat.value),
+        lng: parseFloat(pickupLng.value),
+        dropoff: document.getElementById('dropoffLocation').value,
+        pay: document.getElementById('deliveryPay').value
+      };
+
+      tasks.unshift(newTask);
+      saveTasks(tasks);
+
+      createTaskForm.reset();
+      alert('New delivery task posted successfully!');
+      renderAdminTasks();
+    });
+
+    function renderAdminTasks() {
+      const tasks = getTasks();
+      adminTaskList.innerHTML = "";
+
+      if (tasks.length === 0) {
+        adminTaskList.innerHTML = `<p style="color: #64748b; font-size: 0.9rem;">No active tasks posted.</p>`;
+        return;
+      }
+
+      tasks.forEach((task) => {
+        const item = document.createElement('div');
+        item.className = 'admin-task-item';
+        item.innerHTML = `
+          <div>
+            <strong>${task.pickupName}</strong> (${task.pay})<br>
+            <span style="color: #64748b; font-size: 0.8rem;">Coords: [${task.lat}, ${task.lng}] ➔ Dropoff: ${task.dropoff}</span>
+          </div>
+          <button class="delete-btn" onclick="deleteTask('${task.id}')">Delete</button>
+        `;
+        adminTaskList.appendChild(item);
+      });
+    }
+
+    function deleteTask(id) {
+      let tasks = getTasks();
+      tasks = tasks.filter(t => t.id !== id);
+      saveTasks(tasks);
+      renderAdminTasks();
+    }
+
+    // --- Rider Portal Logic ---
+    let userLat = null;
+    let userLng = null;
+
+    const checkLocBtn = document.getElementById('checkLocBtn');
+    const regLocStatus = document.getElementById('regLocStatus');
+    const regSubmitBtn = document.getElementById('regSubmitBtn');
+    const riderTaskList = document.getElementById('riderTaskList');
+
+    function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+    }
+
+    function fetchLocation(callback) {
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          userLat = pos.coords.latitude;
+          userLng = pos.coords.longitude;
+          callback(true);
+        },
+        (err) => {
+          console.error(err);
+          callback(false);
+        }
+      );
+    }
+
+    checkLocBtn.addEventListener('click', () => {
+      regLocStatus.textContent = "Acquiring GPS Signal...";
+      regLocStatus.className = "status-msg";
+
+      fetchLocation((success) => {
+        if (success) {
+          regLocStatus.textContent = "Location verified successfully!";
+          regLocStatus.className = "status-msg success";
+          regSubmitBtn.disabled = false;
+        } else {
+          regLocStatus.textContent = "Failed to access location. Enable GPS to proceed.";
+          regLocStatus.className = "status-msg error";
+        }
+      });
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('fullName').value;
+      const phone = document.getElementById('phoneNumber').value;
+
+      document.getElementById('riderGreeting').textContent = `Hi, ${name}`;
+      document.getElementById('riderPhone').textContent = phone;
+
+      document.getElementById('registrationCard').classList.add('hidden');
+      document.getElementById('taskMenuCard').classList.remove('hidden');
+
+      renderRiderTasks();
+    });
+
+    function renderRiderTasks() {
+      const tasks = getTasks();
+      riderTaskList.innerHTML = "";
+
+      if (tasks.length === 0) {
+        riderTaskList.innerHTML = `<p style="color: #64748b; font-size: 0.9rem;">No tasks posted by admin yet.</p>`;
+        return;
+      }
+
+      tasks.forEach((task) => {
+        const dist = calculateDistanceKm(userLat, userLng, task.lat, task.lng);
+        const inVicinity = dist <= MAX_TASK_RADIUS_KM;
+
+        const card = document.createElement('div');
+        card.className = 'task-card';
+
+        card.innerHTML = `
+          <div class="task-header">
+            <span>${task.pickupName}</span>
+            <span class="task-pay">${task.pay}</span>
+          </div>
+          <div class="task-detail"><strong>Dropoff:</strong> ${task.dropoff}</div>
+          <div class="task-detail" style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+            <span>Distance to pickup: <strong>${dist.toFixed(1)} km</strong></span>
+            <span class="badge ${inVicinity ? 'near' : 'far'}">
+              ${inVicinity ? 'In Vicinity' : 'Out of Range'}
+            </span>
+          </div>
+          <button class="btn" style="margin-top: 8px; padding: 8px;" 
+            ${!inVicinity ? 'disabled' : ''} 
+            onclick="acceptTask('${task.id}', '${task.pickupName}')">
+            ${inVicinity ? 'Accept Task' : 'Too Far to Claim'}
+          </button>
+        `;
+
+        riderTaskList.appendChild(card);
+      });
+    }
+
+    document.getElementById('refreshLocBtn').addEventListener('click', () => {
+      fetchLocation((success) => {
+        if (success) renderRiderTasks();
+      });
+    });
+
+    function acceptTask(taskId, pickup) {
+      alert(`Task ${taskId} accepted!\nProceed to ${pickup} for pickup.`);
+    }
+  </script>
+</body>
+</html>

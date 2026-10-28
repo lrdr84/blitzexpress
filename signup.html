@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dispatch Rider Registration</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --border: #e2e8f0;
+      --error: #ef4444;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .registration-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .registration-card h2 {
+      margin-bottom: 8px;
+      font-size: 1.5rem;
+    }
+
+    .registration-card p.subtitle {
+      color: #64748b;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .location-box {
+      margin-bottom: 20px;
+      padding: 12px;
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      background-color: #f1f5f9;
+      text-align: center;
+    }
+
+    .location-btn {
+      background: none;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .status-msg {
+      margin-top: 10px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .status-msg.error { color: var(--error); }
+    .status-msg.success { color: var(--success); }
+  </style>
+</head>
+<body>
+
+  <div class="registration-card">
+    <h2>Join Our Dispatch Team</h2>
+    <p class="subtitle">Register to start receiving delivery tasks in your area.</p>
+
+    <form id="dispatchForm" >
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input name="fullName" type="text" id="fullName" placeholder="e.g. John Doe" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input name="phoneNumber" type="tel" id="phoneNumber" placeholder="e.g. 08123456789" required>
+      </div>
+            <div class="form-group">
+        <label for="matricNumber">Matric Number</label>
+        <input name="matricNumber" type="tel" id="matricNumber" placeholder="e.g. 2021/76328" required>
+      </div>
+      <div class="form-group">
+        <label for="department">Department</label>
+        <input type="tel" name="department" id="department" placeholder="e.g. Data Science" required>
+      </div>
+      <div class="form-group">
+        <label for="idcard">Image Of Your Student Id Card</label>
+        <input id="idcard"  type="file">
+        <p style="font-size: x-small; color: red; text-align: center;">nothing more than 200kb</p>
+      </div>
+      
+  
+        <div>
+         
+        </div>
+
+      <div class="location-box">
+        <p style="font-size: 0.9rem;">We need to check if you are within our service area.</p>
+        <button type="button" class="location-btn" id="checkLocationBtn">Check My Location</button>
+        <div id="locationStatus" class="status-msg"></div>
+      </div>
+         <p  ><a download="#" href="">Terms and Conditions Applied </a><input required id="tnc" type="checkbox" style="text-align: left;"></p>
+      <!-- Hidden inputs to store coordinates when form submits -->
+      <input type="hidden" id="latitude" name="latitude">
+      <input type="hidden" id="longitude" name="longitude">
+
+      <button type="submit" class="btn" id="submitBtn" disabled>Register for Tasks</button>
+    </form>
+  </div>
+
+  <script>
+    // Dispatch Base Coordinates (e.g. Ikeja, Lagos Central Base)
+    const BASE_LAT = 6.6018;
+    const BASE_LNG = 3.3515;
+    const MAX_DISTANCE_KM = 20; // Allowed radius in km
+    const checkLocationBtn = document.getElementById('checkLocationBtn');
+    const locationStatus = document.getElementById('locationStatus');
+    const submitBtn = document.getElementById('submitBtn');
+    const latInput = document.getElementById('latitude');
+    const lngInput = document.getElementById('longitude');
+
+    // Calculate distance between two coordinates in kilometers (Haversine Formula)
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Earth radius in km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c; 
+    }
+
+    checkLocationBtn.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        locationStatus.textContent = "Geolocation is not supported by your browser.";
+        locationStatus.className = "status-msg error";
+        return;
+      }
+
+      locationStatus.textContent = "Checking location...";
+      locationStatus.className = "status-msg";
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLat = position.coords.latitude;
+          const userLng = position.coords.longitude;
+
+          latInput.value = userLat;
+          lngInput.value = userLng;
+
+          const distance = calculateDistance(BASE_LAT, BASE_LNG, userLat, userLng);
+
+          if (distance <= MAX_DISTANCE_KM) {
+            locationStatus.textContent = `Location verified! You are ${distance.toFixed(1)} km away (Within service area).`;
+            locationStatus.className = "status-msg success";
+            submitBtn.disabled = false;
+          } else {
+            locationStatus.textContent = `You are ${distance.toFixed(1)} km away. You must be within ${MAX_DISTANCE_KM} km of our hub to take tasks.`;
+            locationStatus.className = "status-msg error";
+            submitBtn.disabled = true;
+          }
+        },
+        (error) => {
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              locationStatus.textContent = "Location permission denied. Please allow location access to register.";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              locationStatus.textContent = "Location information unavailable.";
+              break;
+            case error.TIMEOUT:
+              locationStatus.textContent = "Location request timed out.";
+              break;
+            default:
+              locationStatus.textContent = "An unknown error occurred while fetching location.";
+          }
+          locationStatus.className = "status-msg error";
+          submitBtn.disabled = true;
+        }
+      );
+    });
+
+    document.getElementById('dispatchForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('fullName').value;
+      const phone = document.getElementById('phoneNumber').value;
+      const lat = latInput.value;
+      const lng = lngInput.value;
+
+      alert(`Registration Successful!\n\nName: ${name}\nPhone: ${phone} + We will get back to you via sms/email within 48hrs`);
+      
+      // Here you can send the data to your backend API via fetch() or PHP script
+    });
+  </script>
+</body>
+</html>

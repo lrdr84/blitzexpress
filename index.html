@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blitz Express - Express Food, Package & Moving Services</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="icon" href="pics/black blitx nobg.png">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            300: 'fdeo47',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#1C1917',
+                        },
+                        accent: {
+                            300: '#fdeo47',
+                            500: '#f97316',
+                            600: '#ea580c',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .tab-active { border-bottom: 3px solid #37579a; color: #2039b4; font-weight: 700; }
+        .glass-panel { background: rgba(8, 14, 33, 0.85); backdrop-filter: blur(10px); }
+        .dark .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .dark ::-webkit-scrollbar-thumb { background: #152030; }
+
+    .headname{
+         font-family: "Black Ops One", system-ui;
+         display: inline-block; 
+         color: #cbd5e1;
+         text-transform: uppercase;
+         letter-spacing: 2px;
+         font-size: 20px;
+        animation: zoomOffRight 3s cubic-bezier(0.55, 0.085, 0.68, 0.53) both infinite ;
+        padding: 5px;
+
+    }
+        @keyframes zoomOffRight {
+  0% {
+    transform: translateX(0) scale(1);
+ 
+  }
+    10% {
+    transform: translateX(0) scale(1);
+    transform: rotate(-10deg);
+  }
+  20% {
+   transform: rotate(-7deg);
+    transform: translateX(10px) scale(1); 
+  }
+  40% {
+    transform: rotate(-10deg);
+  }
+    60% {
+    transform: rotate(-10deg);
+    transform: translateX(150px)
+  }
+    100% {
+    transform: translateX(0) scale(1);
+    filter: blur(0px); 
+  }
+}
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200 " style="background-color: rgb(18, 18, 79);">
+
+    <header class="sticky top-0 z-40 glass-panel border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('food')">
+                <div class="h-18">
+                    <img src="pics/blitz express.png"  class="w-10 h-15 rounded">
+                </div>
+                <div>
+                    <span class="headname"><i data-lucide="truck" class="w-4 h-4"></i>Blitz Express</span>
+                    <span class="text-[10px] block font-semibold tracking-widest text-slate-400 uppercase -mt-1">Express Delivery</span>
+                </div>
+            </div>
+
+            <!-- Service Navigation Tabs -->
+            <nav class="hidden md:flex items-center space-x-1 bg-slate-100 dark:bg-slate-800/60 p-1.5 rounded-2xl border border-slate-200/50 dark:border-slate-700/50">
+                <button onclick="switchTab('food')" id="nav-food" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 text-brand-600 dark:text-brand-500 bg-white dark:bg-slate-900 shadow-sm">
+                    <i data-lucide="utensils" class="w-4 h-4"></i> Food Delivery
+                </button>
+                <button onclick="switchTab('pickup')" id="nav-pickup" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    <i data-lucide="package" class="w-4 h-4"></i> Pickup & Package
+                </button>
+                <button onclick="switchTab('moving')" id="nav-moving" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    <i data-lucide="truck" class="w-4 h-4"></i> Moving & Haulage
+                </button>
+                <a href="signup2.html"><button onclick="switchTab('signup')" id="nav-moving" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    <i data-lucide="truck" class="w-4 h-4"></i> Become an agent</button></a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <button onclick="openTrackerModal()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition flex items-center gap-1.5 text-xs font-semibold" title="Track Order">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-accent-500"></i>
+                    <span class="hidden sm:inline">Track Order</span>
+                </button>
+                
+                <button onclick="toggleCartDrawer()" class="relative bg-brand-600 hover:bg-brand-300 text-white p-2.5 rounded-xl transition shadow-md shadow-brand-600/20 flex items-center gap-2">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <span id="cart-count-badge" class="bg-accent-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Bottom Tab Navigation -->
+        <div class="md:hidden flex border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <button onclick="switchTab('food')" id="mob-nav-food" class="flex-1 py-3 text-xs font-medium text-center text-brand-600 border-b-2 border-brand-600 flex flex-col items-center gap-1">
+                <i data-lucide="utensils" class="w-4 h-4"></i> Food
+            </button>
+            <button onclick="switchTab('pickup')" id="mob-nav-pickup" class="flex-1 py-3 text-xs font-medium text-center text-slate-500 flex flex-col items-center gap-1">
+                <i data-lucide="package" class="w-4 h-4"></i> Package
+            </button>
+            <button onclick="switchTab('moving')" id="mob-nav-moving" class="flex-1 py-3 text-xs font-medium text-center text-slate-500 flex flex-col items-center gap-1">
+                <i data-lucide="truck" class="w-4 h-4"></i> Moving
+            </button>
+            <a href="signup2.html"><button onclick="switchTab('signup')" id="nav-moving" class="nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    <i data-lucide="truck" class="w-4 h-4"></i> Become an agent
+                </button></a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <section class="mb-10 relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-brand-950 text-white p-8 sm:p-12 shadow-2xl border border-slate-800">
+            <div class="relative z-10 max-w-2xl">
+                <span style="margin: auto; float:right;" class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-brand-500/20 text-brand-400 border border-brand-500/30 mb-4">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span> Fast Delivery With Osogbo
+                </span>
+                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
+                    Food, Packages & Relocation Services
+                </h1>
+                <p style="text-align: center;" class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                    Order hot local meals, schedule quick door-to-door parcel pickups
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="switchTab('food')" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm rounded-xl transition shadow-lg shadow-brand-600/30 flex items-center gap-2">
+                        Order Food <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="switchTab('pickup')" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-500 border border-slate-700 text-white font-semibold text-sm rounded-xl transition flex items-center gap-2">
+                        Send Package
+                    </button>
+                </div>
+            </div>
+            <!-- Background Decorative Vector Effect -->
+            <div class="absolute right-0 top-0 bottom-0 w-1/3 pointer-events-none hidden lg:flex items-center justify-center" style="opacity: .7;">
+                <img src="pics/blitz white nobg.png" class="w-56 h-auto "></i>
+            </div>
+        </section>
+
+        <section id="section-food" class="tab-content space-y-8">
+            <!-- Restaurant Selector Header -->
+            <div>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight text-white">Featured Restaurants</h2>
+                        <p class="text-slate-500 text-sm">Select a partner restaurant to order your meal from</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="relative w-full sm:w-64">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+                            <input type="text" id="food-search" onkeyup="filterFoodItems()" placeholder="Search dishes or drinks..." class="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-brand-500 transition">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Restaurant Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" id="restaurant-list">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- Food Menu Items (₦2,500 each) -->
+            <div>
+                <div class="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <h3 class="text-xl  font-bold flex items-center gap-2" style="color: white;">
+                        <i data-lucide="utensils-crossed" class="w-5 h-5 text-brand-600" style="color: white;"></i>
+                        Main Dishes <span class="text-xs bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-400 font-bold px-2.5 py-1 rounded-full">All ₦2,500</span>
+                    </h3>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="food-menu-grid">
+                    <!-- Food items injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Drinks Selection Section -->
+            <div class="pt-6">
+                <div class="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <h3 class="text-xl font-bold flex items-center gap-2" style="color: white;">
+                        <i data-lucide="cup-soda" class="w-5 h-5 text-accent-500" style="color: white;"></i>
+                        Refreshments
+                    </h3>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="drinks-menu-grid">
+                    <!-- Drinks injected dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <section id="section-pickup" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-200/80 dark:border-slate-700/80">
+                    <div class="border-b border-slate-100 dark:border-slate-700/60 pb-6 mb-6">
+                        <span class="text-xs font-bold uppercase tracking-wider text-accent-500 bg-accent-500/10 px-3 py-1 rounded-full">Express Logistics</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold mt-2">Door-to-Door Package Pickup & Delivery</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Instant dispatch rider assignment with real-time route calculation.</p>
+                    </div>
+
+                    <form id="pickup-form" onsubmit="handlePickupSubmit(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Pickup Info -->
+                            <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
+                                <h3 class="font-bold text-sm uppercase text-slate-400 flex items-center gap-2">
+                                    <i data-lucide="circle-dot" class="w-4 h-4 text-brand-600"></i> Pickup Details
+                                </h3>
+                                <div>
+                                    <label class="block text-xs font-semibold mb-1">Pickup Address *</label>
+                                    <input type="text" id="pickup-address" required placeholder="e.g., 14 Admiralty Way, Lekki Phase 1, Lagos" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold mb-1">Sender Name *</label>
+                                    <input type="text" id="sender-name" required placeholder="Full Name" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold mb-1">Sender Phone *</label>
+                                    <input type="tel" id="sender-phone" required placeholder="08012345678" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                            </div>
+
+                            <!-- Delivery Info -->
+                            <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
+                                <h3 class="font-bold text-xs uppercase text-slate-400 flex items-center gap-2">
+                                    <i data-lucide="map-pin" class="w-4 h-4 text-accent-500"></i> Receiver Details
+                                </h3>
+                                <div>
+                                    <label class="block text-xs font-semibold mb-1">Delivery Address *</label>
+                                    <input type="text" id="delivery-address" required placeholder="e.g., 5 Allen Avenue, Ikeja, Lagos" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold mb-1">Recipient Name *</label>
+                                    <input type="text" id="recipient-name" required placeholder="Full Name" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold mb-1">Recipient Phone *</label>
+                                    <input type="tel" id="recipient-phone" required placeholder="08087654321" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Package Specifications -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Package Type</label>
+                                <select id="package-type" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none">
+                                    <option value="Documents">Documents / Letters</option>
+                                    <option value="Electronics">Electronics / Tech</option>
+                                    <option value="Clothing">Fashion / Clothing</option>
+                                    <option value="Fragile Items">Fragile / Glassware</option>
+                                    <option value="General Parcel">General Parcel</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Weight / Size</label>
+                                <select id="package-weight" onchange="calculatePickupEstimate()" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none">
+                                    <option value="small">Small Envelope/Bag (&lt; 2kg)</option>
+                                    <option value="medium">Medium Box (2kg - 10kg)</option>
+                                    <option value="large">Heavy Box (10kg - 25kg)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Estimated Distance (km)</label>
+                                <input type="number" id="pickup-distance" value="8" min="1" max="100" oninput="calculatePickupEstimate()" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Live Cost Calculation Card -->
+                        <div class="bg-gradient-to-r from-brand-900 to-slate-900 text-white p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <span class="text-xs text-brand-300 font-semibold block uppercase">Estimated Delivery Fee</span>
+                                <span id="pickup-cost-display" class="text-3xl font-extrabold text-white">₦2,100</span>
+                                <span class="text-[11px] text-slate-400 block mt-0.5">Base Fare ₦1,500 + ₦75/km + Weight surcharge</span>
+                            </div>
+                            <button type="submit" class="w-full sm:w-auto px-6 py-3 bg-brand-500 hover:bg-brand-600 font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                                <i data-lucide="plus-circle" class="w-5 h-5"></i> Add Pickup to Cart
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-moving" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-200/80 dark:border-slate-700/80">
+                    <div class="border-b border-slate-100 dark:border-slate-700/60 pb-6 mb-6">
+                        <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-500/10 px-3 py-1 rounded-full">Relocation & Logistics</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold mt-2">House & Office Moving Services</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Professional movers with sturdy trucks, protective packing, and optional loaders.</p>
+                    </div>
+
+                    <form id="moving-form" onsubmit="handleMovingSubmit(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Moving From Address *</label>
+                                <input type="text" id="moving-from" required placeholder="Current Address" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Destination Address *</label>
+                                <input type="text" id="moving-to" required placeholder="New Destination Address" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                            </div>
+                        </div>
+
+                        <!-- Service Category & Vehicle Selection -->
+                        <div class="space-y-3">
+                            <label class="block text-xs font-semibold">Select Truck / Vehicle Type</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 d-block m-auto">
+                                <label class="vehicle-card border-2 border-slate-200 dark:border-slate-700 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition relative flex flex-col justify-between">
+                                    <input type="radio" name="vehicle" value="minivan" onclick="calculateMovingEstimate()" checked class="sr-only">
+                                    <div>
+                                        <i data-lucide="truck" class="w-6 h-6 text-brand-300 mb-2"></i>
+                                        <h4 class="font-bold text-sm">Mini Van</h4>
+                                        <p class="text-xs text-slate-500">Studio apartments, small furniture</p>
+                                    </div>
+                                    <span class="text-xs font-extrabold text-brand-600 mt-3 block">₦25,000 base</span>
+                                </label>
+
+                                <label class="vehicle-card border-2 border-slate-200 dark:border-slate-700 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition relative flex flex-col justify-between">
+                                    <input type="radio" name="vehicle" value="bus" onclick="calculateMovingEstimate()" class="sr-only">
+                                    <div>
+                                        <i data-lucide="truck" class="w-6 h-6 text-brand-300 mb-2"></i>
+                                        <h4 class="font-bold text-sm">Large Bus</h4>
+                                        <p class="text-xs text-slate-500">1-2 Bedroom Flat contents</p>
+                                    </div>
+                                    <span class="text-xs font-extrabold text-brand-600 mt-3 block">₦45,000 base</span>
+                                </label>
+
+                                <!-- <label class="vehicle-card border-2 border-slate-200 dark:border-slate-700 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition relative flex flex-col justify-between">
+                                    <input type="radio" name="vehicle" value="light_truck" onclick="calculateMovingEstimate()" class="sr-only">
+                                    <div>
+                                        <i data-lucide="truck" class="w-6 h-6 text-brand-600 mb-2"></i>
+                                        <h4 class="font-bold text-sm">Light Truck</h4>
+                                        <p class="text-xs text-slate-500">3-4 Bedroom Flat, Office gear</p>
+                                    </div>
+                                    <span class="text-xs font-extrabold text-brand-600 mt-3 block">₦70,000 base</span>
+                                </label>
+
+                                <label class="vehicle-card border-2 border-slate-200 dark:border-slate-700 rounded-2xl p-4 cursor-pointer hover:border-brand-500 transition relative flex flex-col justify-between">
+                                    <input type="radio" name="vehicle" value="flatbed" onclick="calculateMovingEstimate()" class="sr-only">
+                                    <div >
+                                        <i data-lucide="truck" class="w-6 h-6 text-brand-600 mb-2"></i>
+                                        <h4 class="font-bold text-sm">Flatbed Truck</h4>
+                                        <p class="text-xs text-slate-500">Heavy equipment, Large house</p>
+                                    </div>
+                                    <span class="text-xs font-extrabold text-brand-600 mt-3 block">₦120,000 base</span>
+                                </label> -->
+                            </div>
+                        </div>
+
+                        <!-- Extra Helpers & Distance -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Extra Loaders / Helpers (+₦5,000 each)</label>
+                                <select id="moving-helpers" onchange="calculateMovingEstimate()" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none">
+                                    <option value="0">No helpers (Driver only)</option>
+                                    <option value="1">1 Helper (+₦5,000)</option>
+                                    <option value="2" selected>2 Helpers (+₦10,000)</option>
+                                    <option value="3">3 Helpers (+₦15,000)</option>
+                                    <option value="4">4 Helpers (+₦20,000)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Estimated Distance (km)</label>
+                                <input type="number" id="moving-distance" value="15" min="1" max="300" oninput="calculateMovingEstimate()" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Live Quote -->
+                        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-brand-950 text-white p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <span class="text-xs text-slate-400 font-semibold block uppercase">Instant Moving Quote</span>
+                                <span id="moving-cost-display" class="text-3xl font-extrabold text-brand-400">₦38,000</span>
+                                <span class="text-[11px] text-slate-400 block mt-0.5">Includes fuel, driver allowance, and selected helpers</span>
+                            </div>
+                            <button type="submit" class="w-full sm:w-auto px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                                <i data-lucide="plus-circle" class="w-5 h-5"></i> Add Moving Service to Cart
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="cart-drawer-overlay" onclick="toggleCartDrawer()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+    <div id="cart-drawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white dark:bg-slate-900 z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-brand-600"></i>
+                <h3 class="font-extrabold text-lg">Your Delivery Cart</h3>
+            </div>
+            <button onclick="toggleCartDrawer()" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div id="cart-items-container" class="flex-1 overflow-y-auto p-5 space-y-4">
+            <!-- Dynamic Cart Items Injected Here -->
+        </div>
+
+        <div class="p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 space-y-3">
+            <div class="flex justify-between text-sm text-slate-500">
+                <span>Subtotal</span>
+                <span id="cart-subtotal" class="font-semibold text-slate-800 dark:text-slate-200">₦0</span>
+            </div>
+            <div class="flex justify-between text-sm text-slate-500">
+                <span>Service & Processing Fee</span>
+                <span class="font-semibold text-slate-800 dark:text-slate-200">₦500</span>
+            </div>
+            <div class="flex justify-between text-base font-extrabold text-slate-900 dark:text-white pt-2 border-t border-slate-200 dark:border-slate-800">
+                <span>Total Amount</span>
+                <span id="cart-total" class="text-brand-600 dark:text-brand-400">₦0</span>
+            </div>
+            <button id="checkout-btn" onclick="openCheckoutModal()" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                Proceed to Checkout <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-5">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i data-lucide="credit-card" class="w-5 h-5 text-brand-600"></i> Complete Order
+                </h3>
+                <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="checkout-form" onsubmit="processOrder(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Full Name *</label>
+                    <input type="text" id="cust-name" required placeholder="John Doe" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Phone Number *</label>
+                    <input type="tel" id="cust-phone" required placeholder="08012345678" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Primary Delivery Address / Notes *</label>
+                    <textarea id="cust-address" required rows="2" placeholder="Street address, building number, landmark..." class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold mb-2">Payment Method</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="border border-slate-200 dark:border-slate-700 p-3 rounded-xl cursor-pointer text-center hover:border-brand-500 text-xs font-semibold">
+                            <input type="radio" name="payment" value="Card" checked class="mb-1 block mx-auto">
+                            Card
+                        </label>
+                        <label class="border border-slate-200 dark:border-slate-700 p-3 rounded-xl cursor-pointer text-center hover:border-brand-500 text-xs font-semibold">
+                            <input type="radio" name="payment" value="Bank Transfer" class="mb-1 block mx-auto">
+                            Transfer
+                        </label>
+                        <label class="border border-slate-200 dark:border-slate-700 p-3 rounded-xl cursor-pointer text-center hover:border-brand-500 text-xs font-semibold">
+                            <input type="radio" name="payment" value="Pay on Delivery" class="mb-1 block mx-auto">
+                            POD
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-400 block">Total Payable</span>
+                        <span id="checkout-total-display" class="text-xl font-extrabold text-brand-600 dark:text-brand-400">₦0</span>
+                    </div>
+                    <button type="submit" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg transition">
+                        Confirm & Pay
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="tracker-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-6">
+                <div>
+                    <h3 class="text-xl font-bold">Express Order Tracker</h3>
+                    <p class="text-xs text-slate-500" id="tracker-order-id">Order ID: #SWIFT-89421</p>
+                </div>
+                <button onclick="closeTrackerModal()" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Stepper tracker -->
+            <div class="space-y-6 relative before:absolute before:left-4 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-800">
+                
+                <div class="flex items-start gap-4 relative z-10" id="step-1">
+                    <div class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-xs shadow-md">1</div>
+                    <div>
+                        <h4 class="font-bold text-sm">Order Placed & Confirmed</h4>
+                        <p class="text-xs text-slate-500">Your order has been sent to dispatch.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 relative z-10" id="step-2">
+                    <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 flex items-center justify-center font-bold text-xs" id="step-2-icon">2</div>
+                    <div>
+                        <h4 class="font-bold text-sm" id="step-2-title">Dispatcher Assigned</h4>
+                        <p class="text-xs text-slate-500">Rider #402 (Musa A.) picked up assignment.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 relative z-10" id="step-3">
+                    <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 flex items-center justify-center font-bold text-xs" id="step-3-icon">3</div>
+                    <div>
+                        <h4 class="font-bold text-sm" id="step-3-title">On the Way</h4>
+                        <p class="text-xs text-slate-500">Courier is en route to destination.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 relative z-10" id="step-4">
+                    <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 flex items-center justify-center font-bold text-xs" id="step-4-icon">4</div>
+                    <div>
+                        <h4 class="font-bold text-sm" id="step-4-title">Delivered</h4>
+                        <p class="text-xs text-slate-500">Package safely delivered to recipient.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-8 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl flex items-center justify-between border border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-brand-500/20 text-brand-600 flex items-center justify-center font-bold text-sm">
+                        MA
+                    </div>
+                    <div>
+                        <h5 class="text-xs font-bold">Musa Abubakar</h5>
+                        <p class="text-[11px] text-slate-400">Dispatch Rider • TVS Bike</p>
+                    </div>
+                </div>
+                <a href="tel:08000000000" class="px-3.5 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 hover:bg-brand-700">
+                    <i data-lucide="phone" class="w-3.5 h-3.5"></i> Call Rider
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Data Structures
+        const RESTAURANTS = [
+            { id: 'r1', name: 'Mijas\'s', tag: 'Spaggeti, Fried Rice & Jellof Rice', rating: '4.5 ⭐', banner: 'bg-gradient-to-r from-orange-500 to-amber-400' },
+            { id: 'r2', name: "Loli B", tag: 'Beans, Fried Rice & Jellof Rice', rating: '4.6 ⭐', banner: 'bg-gradient-to-r from-blue-600 to-blue-500' },
+            { id: 'r3', name: 'Express Grill', tag: 'Pasta, Fast Food & Sides', rating: '4.1 ⭐', banner: 'bg-gradient-to-r from-red-500 to-rose-400' }
+        ];
+
+        const FOOD_MENU = [
+            { id: 'f1', name: 'Jollof Rice', price: 2450, priced:2500, desc: 'Smoky party jollof served with chicken plantain & spicy sauce.', category: 'food' },
+            { id: 'f2', name: 'Small Spaghetti', price: 1500, priced:1800, desc: 'Richly seasoned stir-fry pasta with peppers and chicken (sm)', category: 'food' },
+            { id: 'f3', name: 'Big Spaghetti', price: 2450, priced:2700, desc: 'Richly seasoned stir-fry pasta with peppers and chicken.', category: 'food' },
+            { id: 'f4', name: 'Fried Rice', price: 2350, priced:2700, desc: 'Classic Nigerian fried rice packed with fresh veg & spices.', category: 'food' },
+            { id: 'f5', name: 'Beans', price: 2450, priced:2700, desc: 'Slow-cooked honey beans (Ewa Aganyin style) with pepper sauce.', category: 'food' }
+        ];
+
+        const DRINKS_MENU = [
+            { id: 'd1', name: 'Zobo Drink', price: 500, desc: 'Chilled & Non acholic', category: 'drink', bgc:'https://www.bing.com/images/search?view=detailV2&ccid=nFetB8AI&id=16DD3D1482A53F61C940D336AD484E23A0B38601&thid=OIP.nFetB8AII_HWO3LiSCXK1AHaHf&mediaurl=https%3a%2f%2fproveg.org%2fng%2fwp-content%2fuploads%2fsites%2f4%2f2024%2f04%2fZobo-drink-scaled-e1696244205636-1013x1024.jpg&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.9c57ad07c00823f1d63b72e24825cad4%3frik%3dAYazoCNOSK020w%26pid%3dImgRaw%26r%3d0&exph=1024&expw=1013&q=ZOBO&FORM=IRPRST&ck=DB30ECF22CFEC40142608B3393AE510B&selectedIndex=0&itb=0' },
+            { id: 'd2', name: 'Chapman', price: 500, desc: 'Chilled & Non acholic', category: 'drink', bgc:'pics/coke-removebg-preview.png' },
+            { id: 'd3', name: 'Plastic Malt', price: 600, desc: ' Chilled & Non acholic', category: 'drink' , bgc:'https://www.bing.com/images/search?view=detailV2&ccid=9LoQT8yt&id=54F3C5DFB088EAEB92BCEB03491EB12FB92BB797&thid=OIP.9LoQT8ytgQHyNB0xgE86ugHaHa&mediaurl=https%3a%2f%2fourafricanshop.com%2fwp-content%2fuploads%2f2017%2f08%2fAMSTEL-MALTA-CAN-33CL.jpg&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.f4ba104fccad8101f2341d31804f3aba%3frik%3dl7cruS%252bxHkkD6w%26pid%3dImgRaw%26r%3d0&exph=750&expw=750&q=malt+amstel&FORM=IRPRST&ck=7A3C99569754805968CBBE1C780279C5&selectedIndex=7&itb=0'},
+            { id: 'd3', name: 'Can Malt', price: 600, desc: ' Chilled & Non acholic', category: 'drink', bgc:'https://www.bing.com/images/search?view=detailV2&ccid=9LoQT8yt&id=54F3C5DFB088EAEB92BCEB03491EB12FB92BB797&thid=OIP.9LoQT8ytgQHyNB0xgE86ugHaHa&mediaurl=https%3a%2f%2fourafricanshop.com%2fwp-content%2fuploads%2f2017%2f08%2fAMSTEL-MALTA-CAN-33CL.jpg&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.f4ba104fccad8101f2341d31804f3aba%3frik%3dl7cruS%252bxHkkD6w%26pid%3dImgRaw%26r%3d0&exph=750&expw=750&q=malt+amstel&FORM=IRPRST&ck=7A3C99569754805968CBBE1C780279C5&selectedIndex=7&itb=0' },
+            { id: 'd4', name: 'Coca-Cola', price: 500, desc: '50cl ice-cold bottled refreshing soft drink.', category: 'drink', bgc:'pics/coke-removebg-preview.png' },
+            { id: 'd5', name: 'Bottled Water', price: 300, desc: 'Pure 75cl chilled spring drinking water.', category: 'drink', bgc:'pics/bottle_water-removebg-preview.png' },
+            { id: 'd6', name: 'Chivita Juice', price: 1200, desc: '1 Litre 100% natural fruit juice box.', category: 'drink', bgc:'https://www.bing.com/images/search?view=detailV2&ccid=j11MtFoM&id=3BCBCEAF16B890A8646159F6EDE47615FC22FB91&thid=OIP.j11MtFoMC7KW5GmzBhwgxwHaHa&mediaurl=https%3a%2f%2fprimegrocers.ng%2fwp-content%2fuploads%2f2020%2f06%2f19_bde5b548-9c75-4aa3-a690-edd7559b9646_1024x.jpg&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.8f5d4cb45a0c0bb296e469b3061c20c7%3frik%3dkfsi%252fBV25O32WQ%26pid%3dImgRaw%26r%3d0&exph=700&expw=700&q=Chivita+100%25+Real+Orange+No+Sugar+1L&mode=overlay&FORM=VSMAGC&ck=3FB743DC3BBC1AFED14D21574EEE606D&idpp=serp' }
+        ];
+
+
+        let selectedRestaurant = RESTAURANTS[0].id;
+        let cart = [];
+        let currentTab = 'food';
+
+        function initApp() {
+            renderRestaurants();
+            renderFoodMenu();
+            renderDrinksMenu();
+            calculatePickupEstimate();
+            calculateMovingEstimate();
+            updateCartUI();
+            lucide.createIcons();
+        }
+
+        function switchTab(tabId) {
+            currentTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+
+            // Desktop Nav Styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = 'nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+            });
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.className = 'nav-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 text-brand-600 dark:text-brand-500 bg-white dark:bg-slate-900 shadow-sm';
+            }
+
+            // Mobile Nav Styling
+            document.querySelectorAll('[id^="mob-nav-"]').forEach(btn => {
+                btn.className = 'flex-1 py-3 text-xs font-medium text-center text-slate-500 flex flex-col items-center gap-1';
+            });
+            const activeMob = document.getElementById(`mob-nav-${tabId}`);
+            if (activeMob) {
+                activeMob.className = 'flex-1 py-3 text-xs font-medium text-center text-brand-600 border-b-2 border-brand-600 flex flex-col items-center gap-1';
+            }
+        }
+
+        function renderRestaurants() {
+            const container = document.getElementById('restaurant-list');
+            container.innerHTML = RESTAURANTS.map(r => `
+                <div onclick="selectRestaurant('${r.id}')" class="cursor-pointer border-2 ${selectedRestaurant === r.id ? 'border-brand-500 shadow-lg shadow-brand-500/10' : 'border-slate-200 dark:border-slate-800'} rounded-2xl overflow-hidden bg-white dark:bg-slate-800 transition hover:border-brand-400">
+                    <div class="${r.banner} h-60 p-4 flex justify-between items-start text-white">
+                        <span class="text-xs font-bold bg-black/30 backdrop-blur-md px-2.5 py-1 rounded-full">${r.rating}</span>
+                        ${selectedRestaurant === r.id ? '<span class="bg-white text-brand-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase">Selected</span>' : ''}
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-extrabold text-base">${r.name}</h4>
+                        <p class="text-xs text-slate-500 mt-1">${r.tag}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectRestaurant(id) {
+            selectedRestaurant = id;
+            renderRestaurants();
+        }
+        function renderFoodMenu(items = FOOD_MENU) {
+            const container = document.getElementById('food-menu-grid');
+            container.innerHTML = items.map(item => `
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition flex flex-col justify-between hover:bg-brand-50" >
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-base">${item.name}</h4>
+                            <span class="text-brand-600 dark:text-brand-400 font-extrabold text-sm bg-brand-50 dark:bg-brand-950 px-2.5 py-1 rounded-lg">₦${item.price.toLocaleString()}/<strike>₦${item.priced}</strike></span>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">${item.desc}</p>
+                    </div>
+                    <div class="space-y-3">
+                        <input type="text" id="note-${item.id}" placeholder="Special instructions (e.g. extra pepper)" class="w-full px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none">
+                        <button onclick="addFoodToCart('${item.id}')" class="w-full py-2 bg-brand-500 hover:bg-brand-400 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5" style="background-color:;">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderDrinksMenu(items = DRINKS_MENU) {
+            const container = document.getElementById('drinks-menu-grid');
+            container.innerHTML = items.map(drink => `
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 hover:bg-brand-100 d-flex shadow-sm hover:shadow-md transition flex flex-col justify-between" style="background-image:URL('${drink.bgc}');background-repeat:no-repeat;background-size:35px 120px;background-position:right center; opacity:;">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-base">${drink.name}</h4>
+                            <span class="text-accent-500 font-extrabold text-sm bg-accent-500/10 px-2.5 py-1 rounded-lg">₦${drink.price.toLocaleString()}</span>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">${drink.desc}</p>
+                    </div>
+                    <button onclick="addDrinkToCart('${drink.id}')" class="w-full py-2 bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Add Drink
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function filterFoodItems() {
+            const query = document.getElementById('food-search').value.toLowerCase();
+            const filteredFood = FOOD_MENU.filter(f => f.name.toLowerCase().includes(query) || f.desc.toLowerCase().includes(query));
+            const filteredDrinks = DRINKS_MENU.filter(d => d.name.toLowerCase().includes(query) || d.desc.toLowerCase().includes(query));
+            renderFoodMenu(filteredFood);
+            renderDrinksMenu(filteredDrinks);
+        }
+
+        function addFoodToCart(itemId) {
+            const food = FOOD_MENU.find(f => f.id === itemId);
+            const restaurant = RESTAURANTS.find(r => r.id === selectedRestaurant);
+            const note = document.getElementById(`note-${itemId}`) ? document.getElementById(`note-${itemId}`).value : '';
+
+            const cartItem = {
+                cartId: 'c_' + Date.now() + Math.random().toString(36).substr(2, 4),
+                title: `${food.name} (${restaurant.name})`,
+                details: note ? `Note: ${note}` : 'Standard Serving',
+                price: food.price,
+                qty: 1,
+                type: 'food'
+            };
+            cart.push(cartItem);
+            updateCartUI();
+            toggleCartDrawer(true);
+        }
+
+        function addDrinkToCart(drinkId) {
+            const drink = DRINKS_MENU.find(d => d.id === drinkId);
+            const cartItem = {
+                cartId: 'c_' + Date.now() + Math.random().toString(36).substr(2, 4),
+                title: drink.name,
+                details: 'Chilled Nigerian Drink',
+                price: drink.price,
+                qty: 1,
+                type: 'drink'
+            };
+            cart.push(cartItem);
+            updateCartUI();
+            toggleCartDrawer(true);
+        }
+
+        function calculatePickupEstimate() {
+            const weight = document.getElementById('package-weight').value;
+            const dist = parseFloat(document.getElementById('pickup-distance').value) || 1;
+            let base = 1500;
+            let weightSurcharge = 0;
+
+            if (weight === 'medium') weightSurcharge = 800;
+            if (weight === 'large') weightSurcharge = 2000;
+
+            const total = base + (dist * 75) + weightSurcharge;
+            document.getElementById('pickup-cost-display').innerText = `₦${Math.round(total).toLocaleString()}`;
+            return Math.round(total);
+        }
+
+        function handlePickupSubmit(e) {
+            e.preventDefault();
+            const pickupAddr = document.getElementById('pickup-address').value;
+            const delivAddr = document.getElementById('delivery-address').value;
+            const pkgType = document.getElementById('package-type').value;
+            const cost = calculatePickupEstimate();
+
+            cart.push({
+                cartId: 'c_' + Date.now(),
+                title: `Package Pickup: ${pkgType}`,
+                details: `${pickupAddr} ➔ ${delivAddr}`,
+                price: cost,
+                qty: 1,
+                type: 'pickup'
+            });
+
+            updateCartUI();
+            toggleCartDrawer(true);
+            document.getElementById('pickup-form').reset();
+            calculatePickupEstimate();
+        }
+
+        function calculateMovingEstimate() {
+            const selectedVehicle = document.querySelector('input[name="vehicle"]:checked')?.value || 'minivan';
+            const helpers = parseInt(document.getElementById('moving-helpers').value) || 0;
+            const dist = parseFloat(document.getElementById('moving-distance').value) || 1;
+
+            let baseRates = { minivan: 25000, bus: 45000, light_truck: 70000, flatbed: 120000 };
+            let base = baseRates[selectedVehicle] || 25000;
+            let total = base + (helpers * 5000) + (dist * 200);
+
+            document.getElementById('moving-cost-display').innerText = `₦${total.toLocaleString()}`;
+            return total;
+        }
+
+        function handleMovingSubmit(e) {
+            e.preventDefault();
+            const from = document.getElementById('moving-from').value;
+            const to = document.getElementById('moving-to').value;
+            const vehicle = document.querySelector('input[name="vehicle"]:checked').value.replace('_', ' ').toUpperCase();
+            const cost = calculateMovingEstimate();
+
+            cart.push({
+                cartId: 'c_' + Date.now(),
+                title: `Moving Service (${vehicle})`,
+                details: `From: ${from} | To: ${to}`,
+                price: cost,
+                qty: 1,
+                type: 'moving'
+            });
+
+            updateCartUI();
+            toggleCartDrawer(true);
+            document.getElementById('moving-form').reset();
+            calculateMovingEstimate();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const badge = document.getElementById('cart-count-badge');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const totalEl = document.getElementById('cart-total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            badge.innerText = cart.reduce((acc, item) => acc + item.qty, 0);
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-slate-400">
+                        <i data-lucide="shopping-bag" class="w-12 h-12 mx-auto mb-3 opacity-40"></i>
+                        <p class="text-sm font-medium">Your delivery cart is empty.</p>
+                    </div>
+                `;
+                subtotalEl.innerText = '₦0';
+                totalEl.innerText = '₦0';
+                checkoutBtn.disabled = true;
+                return;
+            }
+
+            checkoutBtn.disabled = false;
+            let subtotal = 0;
+
+            container.innerHTML = cart.map((item, index) => {
+                const itemTotal = item.price * item.qty;
+                subtotal += itemTotal;
+                return `
+                    <div class="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700/60 flex items-center justify-between gap-3">
+                        <div class="flex-1 min-w-0">
+                            <h5 class="font-bold text-xs truncate">${item.title}</h5>
+                            <p class="text-[11px] text-slate-400 truncate">${item.details}</p>
+                            <span class="text-xs font-extrabold text-brand-600 dark:text-brand-400 block mt-1">₦${itemTotal.toLocaleString()}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900">
+                                <button onclick="changeQty(${index}, -1)" class="px-2 py-1 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800">-</button>
+                                <span class="px-2 text-xs font-semibold">${item.qty}</span>
+                                <button onclick="changeQty(${index}, 1)" class="px-2 py-1 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800">+</button>
+                            </div>
+                            <button onclick="removeCartItem(${index})" class="text-rose-500 p-1 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const grandTotal = subtotal + 500;
+            subtotalEl.innerText = `₦${subtotal.toLocaleString()}`;
+            totalEl.innerText = `₦${grandTotal.toLocaleString()}`;
+            document.getElementById('checkout-total-display').innerText = `₦${grandTotal.toLocaleString()}`;
+            lucide.createIcons();
+        }
+
+        function changeQty(index, delta) {
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function toggleCartDrawer(open = null) {
+            const drawer = document.getElementById('cart-drawer');
+            const overlay = document.getElementById('cart-drawer-overlay');
+            const isHidden = drawer.classList.contains('translate-x-full');
+
+            if (open === true || (open === null && isHidden)) {
+                drawer.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                drawer.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function openCheckoutModal() {
+            toggleCartDrawer(false);
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function processOrder(e) {
+            e.preventDefault();
+            closeCheckoutModal();
+            cart = [];
+            updateCartUI();
+            openTrackerModal();
+        }
+
+        function openTrackerModal() {
+            const randomID = 'SWIFT-' + Math.floor(10000 + Math.random() * 90000);
+            document.getElementById('tracker-order-id').innerText = `Order ID: #${randomID}`;
+            document.getElementById('tracker-modal').classList.remove('hidden');
+
+            // Simulate Live Tracking Steps
+            simulateTracking();
+        }
+
+        function closeTrackerModal() {
+            document.getElementById('tracker-modal').classList.add('hidden');
+        }
+
+        function simulateTracking() {
+            // Reset state
+            const steps = [2, 3, 4];
+            steps.forEach(s => {
+                const icon = document.getElementById(`step-${s}-icon`);
+                icon.className = "w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 flex items-center justify-center font-bold text-xs";
+            });
+
+            // Timed step progression mock
+            setTimeout(() => {
+                const icon2 = document.getElementById('step-2-icon');
+                if (icon2) icon2.className = "w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-xs shadow-md";
+            }, 2500);
+
+            setTimeout(() => {
+                const icon3 = document.getElementById('step-3-icon');
+                if (icon3) icon3.className = "w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-xs shadow-md";
+            }, 6000);
+        }
+
+        // Run Initialization
+        window.onload = initApp;
+    </script>
+</body>
+</html>
